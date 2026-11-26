@@ -1,7 +1,7 @@
 id: alonabot-plugin-github-cards
 name: GitHub Cards
 description: GitHub link previews, repository queries and subscriptions
-version: 0.1.0
+version: 0.1.1
 author: FlanChanXwO
 source: github.com/FlanChanXwO/alonabot-plugin-github-cards
 role: plugin

@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/AlonaBot/AlonaBot/plugintest"
+	"github.com/AlonaBot/AlonaBot/sdk"
 	"github.com/AlonaBot/AlonaBot/sdk/message"
 	"github.com/google/go-github/v93/github"
 )
@@ -46,6 +47,7 @@ func githubFixture(t *testing.T) github.ClientOptionsFunc {
 func TestCommandsAndCards(t *testing.T) {
 	s := &cards{}
 	p := newPlugin(s, githubFixture(t))
+	p.Raw().ID("test.raw").Handle(func(*sdk.Context) error { return nil })
 	h := plugintest.Start(t, plugintest.Plugin(p))
 	alice, bob := plugintest.User{ID: "alice"}, plugintest.User{ID: "bob"}
 	a, b := plugintest.Private(alice.ID), plugintest.Private(bob.ID)
