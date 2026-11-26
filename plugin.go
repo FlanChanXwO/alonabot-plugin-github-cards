@@ -57,7 +57,7 @@ func newPlugin(s *cards, options ...github.ClientOptionsFunc) *sdk.Plugin {
 		return err
 	})
 	// 链接卡片旁路发送；其他插件的 Raw 路由匹配后仍应识别链接。
-	p.On(sdk.MessageCreated).Handle(s.card)
+	p.On(sdk.MessageCreated).Filter(sdk.MessageFilter{WakeWordsConfig: "github_link_trigger"}).Handle(s.card)
 	p.Command("ghlink").Description("Turn automatic GitHub cards on or off").Handle(s.link)
 	p.Command("ghdefault").Alias("ghdef").Description("Set or show the default repository").Handle(s.defaultRepo)
 	p.Command("ghissue").Alias("ghis").Description("Look up a GitHub Issue").Handle(s.issue)

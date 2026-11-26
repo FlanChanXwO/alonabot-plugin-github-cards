@@ -72,6 +72,10 @@ func TestCommandsAndCards(t *testing.T) {
 		t.Fatalf("README did not send a PNG: %+v", readme.Sends[0])
 	}
 	reply(a, alice, "/ghlink off", "off")
+	ordinary := h.Text(b, bob, "普通聊天消息")
+	if len(ordinary.Outcomes) != 1 || ordinary.Outcomes[0].RouteID != "test.raw" {
+		t.Fatalf("ordinary message went through the link route: %+v", ordinary.Outcomes)
+	}
 	link := "https://github.com/org/repo/pull/3"
 	if got := h.Text(a, alice, link); len(got.Sends) != 0 {
 		t.Fatalf("card after /ghlink off: %+v", got.Sends)
