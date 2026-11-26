@@ -1,1 +1,7 @@
-{}
+{
+  "auto_resolve_links": {"type":"bool","default":true,"description":"Automatically send GitHub link cards"},
+  "check_interval": {"type":"int","default":30,"description":"Polling interval in minutes"},
+  "github_token": {"type":"string","secret":true,"description":"Optional token for public GitHub API access with higher rate limits"},
+  "enable_webhook": {"type":"bool","default":false,"description":"Receive signed GitHub Webhooks instead of polling"},
+  "webhook_secret": {"type":"string","secret":true,"description":"Required when Webhook mode is enabled"}
+}

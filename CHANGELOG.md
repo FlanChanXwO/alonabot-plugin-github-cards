@@ -1,19 +1,7 @@
 # Changelog
 
-The entries below are examples. Replace them with your plugin's changes, versions, and release dates before publishing. Follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). `scripts/release.sh` extracts the matching version section as release notes.
+## [0.1.0] - 2026-11-26
 
-## [Unreleased]
-
-### Added
-
-- Example: Add a lookup command.
-
-### Fixed
-
-- Example: Fix the reply when an optional argument is omitted.
-
-## [0.1.0] - 2026-01-01
-
-### Added
-
-- Example: Release the plugin with a greeting command.
+- 发送 GitHub 原生仓库、Issue 和 PR 链接卡片。
+- 查询 Issue、PR、README 和 API 限额，支持会话默认仓库。
+- 按会话订阅 GitHub 更新，支持轮询与签名 Webhook。
