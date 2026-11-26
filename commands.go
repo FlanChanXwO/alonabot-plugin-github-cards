@@ -44,7 +44,8 @@ func (s *cards) card(c *sdk.Context, e *message.CreatedPayload) error {
 	if (enabled.Valid && !enabled.Bool) || (!enabled.Valid && !s.auto) {
 		return nil
 	}
-	_, err = c.Send(cardImage(strings.TrimRight(ref[1], ".")))
+	// 自动卡片是独立消息，避免附加平台的回复提醒、引用和前缀。
+	_, err = sdk.Send(c, c.Session(), cardImage(strings.TrimRight(ref[1], ".")), sdk.Via(c.Instance()))
 	return err
 }
 

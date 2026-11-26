@@ -50,7 +50,7 @@ func TestCommandsAndCards(t *testing.T) {
 	p.Raw().ID("test.raw").Handle(func(*sdk.Context) error { return nil })
 	h := plugintest.Start(t, plugintest.Plugin(p))
 	alice, bob := plugintest.User{ID: "alice"}, plugintest.User{ID: "bob"}
-	a, b := plugintest.Private(alice.ID), plugintest.Private(bob.ID)
+	a, b := plugintest.Private(alice.ID), plugintest.Group("github-cards")
 	reply := func(chat plugintest.Chat, user plugintest.User, input, want string) {
 		t.Helper()
 		got := h.Text(chat, user, input)
@@ -80,13 +80,29 @@ func TestCommandsAndCards(t *testing.T) {
 	if got := h.Text(a, alice, link); len(got.Sends) != 0 {
 		t.Fatalf("card after /ghlink off: %+v", got.Sends)
 	}
-	got := h.Text(b, bob, link)
-	if len(got.Sends) != 1 {
-		t.Fatalf("card: %+v", got)
+	debug := h.DebugClient()
+	req, err := http.NewRequestWithContext(t.Context(), http.MethodPut, debug.URL+"/api/v1/profiles/default/platform", strings.NewReader(`{"command_prefixes":["/"],"reply":{"mention_sender":true,"quote":true,"prefix":"提示：","forward_threshold":0}}`))
+	if err != nil {
+		t.Fatal(err)
 	}
-	seg, ok := got.Sends[0].Chain[0].(message.ImageSegment)
+	req.Host = debug.Host
+	req.Header.Set("Authorization", "Bearer "+debug.Token)
+	req.Header.Set("Content-Type", "application/json")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("set platform reply policy: %s", res.Status)
+	}
+	sent := h.Text(b, bob, link).Sends
+	if len(sent) != 1 || len(sent[0].Chain) != 1 {
+		t.Fatalf("expected one standalone image: %+v", sent)
+	}
+	seg, ok := sent[0].Chain[0].(message.ImageSegment)
 	if !ok || !strings.HasSuffix(seg.Source.HTTPSURL, "/org/repo/pull/3") {
-		t.Fatalf("card image: %+v", got.Sends[0])
+		t.Fatalf("card image: %+v", sent[0])
 	}
 	reply(a, alice, "/ghunsub org/repo main issues,issue_comment", "已取消 1 条订阅")
 }
